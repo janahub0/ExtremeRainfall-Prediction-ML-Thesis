@@ -1,0 +1,362 @@
+=== LOADING CITIES ===
+
+Singapore: 657,120 rows | extreme_rain rate: 0.050 | extreme days: 32,873
+Tokyo: 4,408,180 rows | extreme_rain rate: 0.050 | extreme days: 220,530
+London: 651,644 rows | extreme_rain rate: 0.050 | extreme days: 32,600
+New_York: 525,696 rows | extreme_rain rate: 0.050 | extreme days: 26,300
+
+=== RUNNING ALL PAIRS (WEEK 13) ===
+
+6 city pairs x 3 models = 18 experiments
+
+
+
+======================================================================
+WEEK 13 — CROSS-CITY RESULTS (sorted by ROC_AUC descending)
+======================================================================
+    Train      Test              Pair        Model  Feature ModelType  Accuracy  Precision   Recall       F1  ROC_AUC
+Singapore     Tokyo  Singapore->Tokyo   B_Full_XGB   B_Full       XGB  0.997881   0.959368 1.000000 0.979263 0.999020
+Singapore     Tokyo  Singapore->Tokyo    A_Full_RF   A_Full        RF  0.997353   0.949742 1.000000 0.974223 0.998748
+    Tokyo Singapore  Tokyo->Singapore   B_Full_XGB   B_Full       XGB  0.998212   1.000000 0.964256 0.981803 0.988588
+    Tokyo Singapore  Tokyo->Singapore    A_Full_RF   A_Full        RF  0.996392   1.000000 0.927874 0.962588 0.983529
+   London  New_York  London->New_York    A_Full_RF   A_Full        RF  0.939745   0.453636 1.000000 0.624140 0.974743
+   London  New_York  London->New_York   B_Full_XGB   B_Full       XGB  0.939885   0.454216 1.000000 0.624688 0.973753
+    Tokyo  New_York   Tokyo->New_York   B_Full_XGB   B_Full       XGB  0.983378   1.000000 0.667757 0.800784 0.900537
+    Tokyo  New_York   Tokyo->New_York    A_Full_RF   A_Full        RF  0.982418   1.000000 0.648555 0.786816 0.845458
+ New_York    London  New_York->London   B_Full_XGB   B_Full       XGB  0.960776   1.000000 0.215951 0.355197 0.837476
+ New_York    London  New_York->London B_NoLags_XGB B_NoLags       XGB  0.791335   0.112651 0.461104 0.181066 0.746595
+ New_York    London  New_York->London    A_Full_RF   A_Full        RF  0.960814   1.000000 0.216718 0.356233 0.673683
+   London  New_York  London->New_York B_NoLags_XGB B_NoLags       XGB  0.949241   0.166667 0.003650 0.007144 0.650691
+    Tokyo Singapore  Tokyo->Singapore B_NoLags_XGB B_NoLags       XGB  0.912310   0.062319 0.053600 0.057632 0.612221
+    Tokyo  New_York   Tokyo->New_York B_NoLags_XGB B_NoLags       XGB  0.889491   0.116459 0.183536 0.142499 0.596656
+Singapore     Tokyo  Singapore->Tokyo B_NoLags_XGB B_NoLags       XGB  0.927199   0.114565 0.067655 0.085072 0.559506
+Singapore    London Singapore->London    A_Full_RF   A_Full        RF  0.955021   1.000000 0.100920 0.183338 0.553974
+Singapore    London Singapore->London B_NoLags_XGB B_NoLags       XGB  0.949973   0.000000 0.000000 0.000000 0.472748
+Singapore    London Singapore->London   B_Full_XGB   B_Full       XGB  0.954848   1.000000 0.097454 0.177600 0.433247
+
+Saved: cross_city_results.csv
+
+--- Results by Model (average across all pairs) ---
+              Accuracy  Precision  Recall      F1  ROC_AUC
+Model                                                     
+A_Full_RF       0.9720     0.9006  0.6490  0.6479   0.8384
+B_Full_XGB      0.9725     0.9023  0.6576  0.6532   0.8554
+B_NoLags_XGB    0.9033     0.0954  0.1283  0.0789   0.6064
+
+
+======================================================================
+WEEK 13 — PERFORMANCE DROP: WITHIN-CITY vs CROSS-CITY
+======================================================================
+             Pair        Model  Within_AUC  Cross_AUC  AUC_Drop
+Singapore->London   B_Full_XGB    0.999962   0.433247    0.5667
+Singapore->London    A_Full_RF    1.000000   0.553974    0.4460
+ New_York->London    A_Full_RF    1.000000   0.673683    0.3263
+Singapore->London B_NoLags_XGB    0.782884   0.472748    0.3101
+ Singapore->Tokyo B_NoLags_XGB    0.782884   0.559506    0.2234
+  Tokyo->New_York B_NoLags_XGB    0.808006   0.596656    0.2114
+ Tokyo->Singapore B_NoLags_XGB    0.808006   0.612221    0.1958
+ London->New_York B_NoLags_XGB    0.818750   0.650691    0.1681
+ New_York->London   B_Full_XGB    0.999996   0.837476    0.1625
+  Tokyo->New_York    A_Full_RF    1.000000   0.845458    0.1545
+  Tokyo->New_York   B_Full_XGB    0.999971   0.900537    0.0994
+ New_York->London B_NoLags_XGB    0.835906   0.746595    0.0893
+ London->New_York   B_Full_XGB    0.999990   0.973753    0.0262
+ London->New_York    A_Full_RF    1.000000   0.974743    0.0253
+ Tokyo->Singapore    A_Full_RF    1.000000   0.983529    0.0165
+ Tokyo->Singapore   B_Full_XGB    0.999971   0.988588    0.0114
+ Singapore->Tokyo    A_Full_RF    1.000000   0.998748    0.0013
+ Singapore->Tokyo   B_Full_XGB    0.999962   0.999020    0.0009
+
+Average AUC Drop by Model:
+Model
+A_Full_RF       0.1616
+B_Full_XGB      0.1445
+B_NoLags_XGB    0.1997
+Higher = model generalizes worse across cities
+
+
+======================================================================
+WEEK 14 — URBAN FEATURE INFLUENCE ANALYSIS
+======================================================================
+
+--- Q1: Does LCZ + building density help cross-city? ---
+A_Full_RF = no urban features, no LCZ
+B_Full_XGB = with building density + avg_LCZ_city + LCZ zone columns
+Note: model type also differs (RF vs XGB) — interpret carefully
+
+             Pair  AUC_NoUrban_RF  AUC_Urban_LCZ_XGB  LCZ_Urban_Benefit
+ London->New_York        0.974743           0.973753            -0.0010
+ New_York->London        0.673683           0.837476             0.1638
+Singapore->London        0.553974           0.433247            -0.1207
+ Singapore->Tokyo        0.998748           0.999020             0.0003
+  Tokyo->New_York        0.845458           0.900537             0.0551
+ Tokyo->Singapore        0.983529           0.988588             0.0051
+
+Mean benefit across all pairs: 0.0171
+Positive = LCZ + urban features + XGB better cross-city
+Negative = plain RF without urban features generalizes better
+
+
+--- Q2: Does rainfall memory transfer cross-city? ---
+B_Full_XGB   = XGB + urban + LCZ + full rainfall features
+B_NoLags_XGB = XGB + urban + LCZ + NO rainfall at all
+Same model, same urban structure — only rainfall features differ
+
+             Pair  AUC_WithRainfall  AUC_NoRainfall  Rainfall_Benefit
+ London->New_York          0.973753        0.650691            0.3231
+ New_York->London          0.837476        0.746595            0.0909
+Singapore->London          0.433247        0.472748           -0.0395
+ Singapore->Tokyo          0.999020        0.559506            0.4395
+  Tokyo->New_York          0.900537        0.596656            0.3039
+ Tokyo->Singapore          0.988588        0.612221            0.3764
+
+Mean benefit across all pairs: 0.2491
+Positive = rainfall memory helps even cross-city
+Negative = rainfall patterns are city-specific, don't transfer
+
+
+--- Q3: Does urban density similarity predict AUC drop? ---
+  Singapore: mean buildings_per_km2 = 73.41
+  Tokyo: mean buildings_per_km2 = 785.78
+  London: mean buildings_per_km2 = 157.93
+  New_York: mean buildings_per_km2 = 295.86
+
+AUC Drop vs Building Density Difference:
+             Pair        Model  AUC_Drop  Density_Diff
+ Tokyo->Singapore B_NoLags_XGB    0.1958        712.36
+ Singapore->Tokyo B_NoLags_XGB    0.2234        712.36
+ Tokyo->Singapore    A_Full_RF    0.0165        712.36
+ Tokyo->Singapore   B_Full_XGB    0.0114        712.36
+ Singapore->Tokyo    A_Full_RF    0.0013        712.36
+ Singapore->Tokyo   B_Full_XGB    0.0009        712.36
+  Tokyo->New_York   B_Full_XGB    0.0994        489.92
+  Tokyo->New_York B_NoLags_XGB    0.2114        489.92
+  Tokyo->New_York    A_Full_RF    0.1545        489.92
+ New_York->London   B_Full_XGB    0.1625        137.93
+ New_York->London B_NoLags_XGB    0.0893        137.93
+ London->New_York    A_Full_RF    0.0253        137.93
+ New_York->London    A_Full_RF    0.3263        137.93
+ London->New_York B_NoLags_XGB    0.1681        137.93
+ London->New_York   B_Full_XGB    0.0262        137.93
+Singapore->London   B_Full_XGB    0.5667         84.51
+Singapore->London    A_Full_RF    0.4460         84.51
+Singapore->London B_NoLags_XGB    0.3101         84.51
+
+Correlation (AUC Drop vs Density Difference): -0.5002
+Positive = more different cities -> bigger AUC drop
+Near zero = density difference alone doesn't predict failure
+
+
+======================================================================
+WEEK 14 — STATISTICAL SIGNIFICANCE TESTS (PAIRED T-TEST)
+======================================================================
+Hypothesis: cross-city AUC scores differ significantly between models
+Test: paired t-test across 6 city pairs
+Threshold: p < 0.05 = statistically significant
+
+--- Test 1: A_Full_RF vs B_Full_XGB ---
+  A_Full_RF   AUC scores: [np.float64(0.9987), np.float64(0.9835), np.float64(0.9747), np.float64(0.6737), np.float64(0.554), np.float64(0.8455)]
+  B_Full_XGB  AUC scores: [np.float64(0.999), np.float64(0.9886), np.float64(0.9738), np.float64(0.8375), np.float64(0.4332), np.float64(0.9005)]
+  t-statistic: -0.4527
+  p-value:     0.6697
+  Result: NOT SIGNIFICANT (p >= 0.05)
+  Interpretation: No statistically significant difference between
+  using LCZ + urban features vs not, across these city pairs.
+
+--- Test 2: B_Full_XGB vs B_NoLags_XGB ---
+  B_Full_XGB   AUC scores: [np.float64(0.999), np.float64(0.9886), np.float64(0.9738), np.float64(0.8375), np.float64(0.4332), np.float64(0.9005)]
+  B_NoLags_XGB AUC scores: [np.float64(0.5595), np.float64(0.6122), np.float64(0.6507), np.float64(0.7466), np.float64(0.4727), np.float64(0.5967)]
+  t-statistic: 3.3156
+  p-value:     0.0211
+  Result: SIGNIFICANT (p < 0.05)
+  Interpretation: Rainfall memory significantly improves
+  cross-city AUC. Rainfall features transfer meaningfully.
+
+--- Test 3: Within-city AUC vs Cross-city AUC (all models) ---
+  Mean within-city AUC: 0.9353
+  Mean cross-city AUC:  0.7667
+  t-statistic: 4.4365
+  p-value:     0.0004
+  Result: SIGNIFICANT (p < 0.05)
+  Interpretation: Cross-city AUC is significantly lower than
+  within-city AUC. Standard within-city evaluation significantly
+  overestimates real-world generalization performance.
+  This directly supports the thesis central argument.
+
+
+======================================================================
+WEEK 13-14 FINAL SUMMARY
+======================================================================
+
+Total experiments run: 18 (6 pairs x 3 models)
+
+--- Best cross-city result per model ---
+       Model             Pair  ROC_AUC       F1   Recall
+   A_Full_RF Singapore->Tokyo 0.998748 0.974223 1.000000
+  B_Full_XGB Singapore->Tokyo 0.999020 0.979263 1.000000
+B_NoLags_XGB New_York->London 0.746595 0.181066 0.461104
+
+--- Worst cross-city result per model ---
+       Model              Pair  ROC_AUC       F1   Recall
+   A_Full_RF Singapore->London 0.553974 0.183338 0.100920
+  B_Full_XGB Singapore->London 0.433247 0.177600 0.097454
+B_NoLags_XGB Singapore->London 0.472748 0.000000 0.000000
+
+--- Average AUC drop (within -> cross-city) ---
+Model
+A_Full_RF       0.1616
+B_Full_XGB      0.1445
+B_NoLags_XGB    0.1997
+
+--- Statistical test summary ---
+Test 1 (RF vs XGB+LCZ+Urban): p = 0.6697 NOT SIGNIFICANT
+Test 2 (XGB Full vs No-lag):  p = 0.0211 SIGNIFICANT
+Test 3 (Within vs Cross AUC): p = 0.0004 SIGNIFICANT
+
+--- Q3 Urban similarity ---
+Pearson correlation (AUC drop vs density diff): -0.5002
+
+
+======================================================================
+WEEK 15 — MULTI-CITY TRAINING
+======================================================================
+
+=== LOADING CITIES ===
+
+Singapore: 657,120 rows | extreme_rain rate: 0.050 | extreme days: 32,873
+Tokyo: 4,408,180 rows | extreme_rain rate: 0.050 | extreme days: 220,530
+London: 651,644 rows | extreme_rain rate: 0.050 | extreme days: 32,600
+New_York: 525,696 rows | extreme_rain rate: 0.050 | extreme days: 26,300
+
+=== RUNNING WEEK 15 — MULTI-CITY TRAINING ===
+Leave-one-out: each city tested once, other 3 train together
+4 setups x 3 models = 12 experiments
+
+
+--- Test: Singapore | Train: Tokyo + London + New_York ---
+
+--- Test: Tokyo | Train: Singapore + London + New_York ---
+
+--- Test: London | Train: Singapore + Tokyo + New_York ---
+
+--- Test: New_York | Train: Singapore + Tokyo + London ---
+
+
+======================================================================
+WEEK 15 — MULTI-CITY RESULTS (sorted by ROC_AUC)
+======================================================================
+                    Train      Test        Model  Feature ModelType  Accuracy  Precision   Recall       F1  ROC_AUC
+    Tokyo+London+New_York Singapore   B_Full_XGB   B_Full       XGB  0.805688   0.204741 1.000000 0.339892 0.999051
+Singapore+London+New_York     Tokyo    A_Full_RF   A_Full        RF  0.981252   0.727399 1.000000 0.842190 0.998905
+Singapore+London+New_York     Tokyo   B_Full_XGB   B_Full       XGB  0.976079   0.676518 1.000000 0.807051 0.998076
+    Tokyo+London+New_York Singapore    A_Full_RF   A_Full        RF  0.996395   1.000000 0.927935 0.962621 0.997203
+   Singapore+Tokyo+London  New_York   B_Full_XGB   B_Full       XGB  0.984533   1.000000 0.690837 0.817154 0.991172
+   Singapore+Tokyo+London  New_York    A_Full_RF   A_Full        RF  0.983783   0.996203 0.678441 0.807175 0.990902
+ Singapore+Tokyo+New_York    London   B_Full_XGB   B_Full       XGB  0.954768   1.000000 0.095859 0.174948 0.832008
+ Singapore+Tokyo+New_York    London B_NoLags_XGB B_NoLags       XGB  0.711428   0.117603 0.733221 0.202695 0.783229
+   Singapore+Tokyo+London  New_York B_NoLags_XGB B_NoLags       XGB  0.902603   0.149489 0.201901 0.171786 0.727720
+ Singapore+Tokyo+New_York    London    A_Full_RF   A_Full        RF  0.960810   1.000000 0.216626 0.356109 0.670706
+Singapore+London+New_York     Tokyo B_NoLags_XGB B_NoLags       XGB  0.935210   0.118692 0.045926 0.066226 0.656469
+    Tokyo+London+New_York Singapore B_NoLags_XGB B_NoLags       XGB  0.913043   0.062518 0.052748 0.057219 0.592587
+
+Saved: week15_results.csv
+
+--- Average by Model ---
+              Accuracy  Precision  Recall      F1  ROC_AUC
+Model                                                     
+A_Full_RF       0.9806     0.9309  0.7058  0.7420   0.9144
+B_Full_XGB      0.9303     0.7203  0.6967  0.5348   0.9551
+B_NoLags_XGB    0.8656     0.1121  0.2584  0.1245   0.6900
+
+
+======================================================================
+WEEK 15 — COMPARISON: SINGLE-CITY (W13 BEST) vs MULTI-CITY
+======================================================================
+Improvement > 0 = multi-city training helped
+Improvement < 0 = single-city training was better
+
+Test_City        Model  Week13_Best_AUC  Week15_Multi_AUC  Improvement Direction
+   London    A_Full_RF         0.673683          0.670706      -0.0030 NO CHANGE
+   London   B_Full_XGB         0.837476          0.832008      -0.0055 NO CHANGE
+   London B_NoLags_XGB         0.746595          0.783229       0.0366  IMPROVED
+ New_York    A_Full_RF         0.974743          0.990902       0.0162  IMPROVED
+ New_York   B_Full_XGB         0.973753          0.991172       0.0174  IMPROVED
+ New_York B_NoLags_XGB         0.650691          0.727720       0.0770  IMPROVED
+Singapore    A_Full_RF         0.983529          0.997203       0.0137  IMPROVED
+Singapore   B_Full_XGB         0.988588          0.999051       0.0105  IMPROVED
+Singapore B_NoLags_XGB         0.612221          0.592587      -0.0196     WORSE
+    Tokyo    A_Full_RF         0.998748          0.998905       0.0002 NO CHANGE
+    Tokyo   B_Full_XGB         0.999020          0.998076      -0.0009 NO CHANGE
+    Tokyo B_NoLags_XGB         0.559506          0.656469       0.0970  IMPROVED
+
+--- Summary by Direction ---
+Direction
+IMPROVED     7
+NO CHANGE    4
+WORSE        1
+
+--- Average improvement by model ---
+Model
+A_Full_RF       0.0068
+B_Full_XGB      0.0054
+B_NoLags_XGB    0.0478
+
+--- Average improvement by test city ---
+Test_City
+London       0.0094
+New_York     0.0369
+Singapore    0.0015
+Tokyo        0.0321
+
+
+======================================================================
+WEEK 15 — STATISTICAL TEST
+======================================================================
+Paired t-test: Week 13 best single-city AUC vs Week 15 multi-city AUC
+Tests whether multi-city training produces significantly different results
+
+Week 13 mean AUC: 0.8332
+Week 15 mean AUC: 0.8532
+t-statistic: -1.9968
+p-value:     0.0712
+Result: NOT SIGNIFICANT (p >= 0.05)
+Multi-city training does not significantly change performance
+compared to the best single-city training.
+
+
+======================================================================
+WEEK 15 FINAL SUMMARY
+======================================================================
+
+Total experiments: 12 (4 test cities x 3 models)
+
+--- Best multi-city result per model ---
+       Model      Test  ROC_AUC       F1   Recall
+   A_Full_RF     Tokyo 0.998905 0.842190 1.000000
+  B_Full_XGB Singapore 0.999051 0.339892 1.000000
+B_NoLags_XGB    London 0.783229 0.202695 0.733221
+
+--- Worst multi-city result per model ---
+       Model      Test  ROC_AUC       F1   Recall
+   A_Full_RF    London 0.670706 0.356109 0.216626
+  B_Full_XGB    London 0.832008 0.174948 0.095859
+B_NoLags_XGB Singapore 0.592587 0.057219 0.052748
+
+--- Did multi-city training help? (vs Week 13 best) ---
+Test_City        Model  Week13_Best_AUC  Week15_Multi_AUC  Improvement Direction
+   London    A_Full_RF         0.673683          0.670706      -0.0030 NO CHANGE
+   London   B_Full_XGB         0.837476          0.832008      -0.0055 NO CHANGE
+   London B_NoLags_XGB         0.746595          0.783229       0.0366  IMPROVED
+ New_York    A_Full_RF         0.974743          0.990902       0.0162  IMPROVED
+ New_York   B_Full_XGB         0.973753          0.991172       0.0174  IMPROVED
+ New_York B_NoLags_XGB         0.650691          0.727720       0.0770  IMPROVED
+Singapore    A_Full_RF         0.983529          0.997203       0.0137  IMPROVED
+Singapore   B_Full_XGB         0.988588          0.999051       0.0105  IMPROVED
+Singapore B_NoLags_XGB         0.612221          0.592587      -0.0196     WORSE
+    Tokyo    A_Full_RF         0.998748          0.998905       0.0002 NO CHANGE
+    Tokyo   B_Full_XGB         0.999020          0.998076      -0.0009 NO CHANGE
+    Tokyo B_NoLags_XGB         0.559506          0.656469       0.0970  IMPROVED
+
+Overall: 7 improved | 1 worse | 4 no change
+
+Statistical test p-value: 0.0712 — NOT SIGNIFICANT

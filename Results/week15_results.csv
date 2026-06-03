@@ -1,0 +1,13 @@
+Train,Test,Model,Feature,ModelType,Accuracy,Precision,Recall,F1,ROC_AUC
+Tokyo+London+New_York,Singapore,A_Full_RF,A_Full,RF,0.996395,1.0,0.927935,0.962621,0.997203
+Tokyo+London+New_York,Singapore,B_Full_XGB,B_Full,XGB,0.805688,0.204741,1.0,0.339892,0.999051
+Tokyo+London+New_York,Singapore,B_NoLags_XGB,B_NoLags,XGB,0.913043,0.062518,0.052748,0.057219,0.592587
+Singapore+London+New_York,Tokyo,A_Full_RF,A_Full,RF,0.981252,0.727399,1.0,0.84219,0.998905
+Singapore+London+New_York,Tokyo,B_Full_XGB,B_Full,XGB,0.976079,0.676518,1.0,0.807051,0.998076
+Singapore+London+New_York,Tokyo,B_NoLags_XGB,B_NoLags,XGB,0.93521,0.118692,0.045926,0.066226,0.656469
+Singapore+Tokyo+New_York,London,A_Full_RF,A_Full,RF,0.96081,1.0,0.216626,0.356109,0.670706
+Singapore+Tokyo+New_York,London,B_Full_XGB,B_Full,XGB,0.954768,1.0,0.095859,0.174948,0.832008
+Singapore+Tokyo+New_York,London,B_NoLags_XGB,B_NoLags,XGB,0.711428,0.117603,0.733221,0.202695,0.783229
+Singapore+Tokyo+London,New_York,A_Full_RF,A_Full,RF,0.983783,0.996203,0.678441,0.807175,0.990902
+Singapore+Tokyo+London,New_York,B_Full_XGB,B_Full,XGB,0.984533,1.0,0.690837,0.817154,0.991172
+Singapore+Tokyo+London,New_York,B_NoLags_XGB,B_NoLags,XGB,0.902603,0.149489,0.201901,0.171786,0.72772
